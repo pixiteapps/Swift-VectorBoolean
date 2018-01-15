@@ -868,6 +868,31 @@ class FBBezierGraph {
       contour.inside = contourInsides(contour)
     }
   }
+    
+    // Added by Scott Sykora. Needed to clean up bezier paths that have wrong windings
+    func fixWindingsForNonZeroFill() {
+        // reverse any contours that are needed to keep non-zero winding rule working
+        
+        removeCrossings()
+        insertSelfCrossings() // this will set contour insides correctly
+        
+        var fixedContours = [FBBezierContour]()
+        
+        for contour in _contours {
+            let isInside = contour.inside == .hole
+            let isClockwise = contour.direction == .clockwise
+            
+            if ((isInside && isClockwise) || (!isInside && !isClockwise)) {
+                fixedContours.append(contour.reversedContour)
+            } else {
+                fixedContours.append(contour)
+            }
+        }
+        
+        _contours = fixedContours
+        
+        removeCrossings()
+    }
 
   // 750
   //- (NSRect) bounds
