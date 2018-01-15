@@ -341,6 +341,11 @@ extension FBBezierCurve {
     if !intersection.isAtEndPointOfCurve {
       return true
     }
+    
+    // if these are both straight lines, then they always cross // ADDED BY Scott to fix side by side squares. not sure if this is right
+    if(isStraightLine && edge2.isStraightLine) {
+        return true;
+    }
 
     // The intersection happens at the end of one of the edges, meaning we'll
     // have to look at the next edge in sequence to see if it crosses or not.
