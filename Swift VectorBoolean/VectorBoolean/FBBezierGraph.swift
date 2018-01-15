@@ -597,35 +597,54 @@ class FBBezierGraph {
   // 544
   //- (NSBezierPath *) bezierPath
   var bezierPath : UIBezierPath {
-    // Convert this graph into a bezier path. This is straightforward, each contour
-    //  starting with a move to and each subsequent edge being translated by doing
-    //  a curve to.
-    // Be sure to mark the winding rule as even-odd, or interior contours (holes)
-    //  won't get filled/left alone properly.
-    let path = UIBezierPath()
-    path.usesEvenOddFillRule = true
-
-    for contour in _contours {
-      var firstPoint = true
-      for edge in contour.edges {
-        if firstPoint {
-          path.move(to: edge.endPoint1)
-          firstPoint = false
-        }
-
-        if edge.isStraightLine {
-          path.addLine(to: edge.endPoint2)
-        } else {
-          path.addCurve(to: edge.endPoint2, controlPoint1: edge.controlPoint1, controlPoint2: edge.controlPoint2)
-        }
-      }
-      if !path.isEmpty {
-        path.close()  // GPC: close each contour
-      }
-    }
-
-    return path
+    return bezierPath(nonZeroWinding: false)
   }
+
+    func bezierPath(nonZeroWinding:Bool) -> UIBezierPath {
+        // Convert this graph into a bezier path. This is straightforward, each contour
+        //  starting with a move to and each subsequent edge being translated by doing
+        //  a curve to.
+        // Be sure to mark the winding rule as even-odd, or interior contours (holes)
+        //  won't get filled/left alone properly.
+        let path = UIBezierPath()
+        path.usesEvenOddFillRule = false
+        
+        for contour in _contours {
+            var firstPoint = true
+            
+            contour.inside = contourInsides(contour)
+            let isHole = contour.inside == .hole
+            let isClockwise = contour.direction == .clockwise
+            
+            let fixedContour:FBBezierContour
+            if nonZeroWinding && ((isHole && isClockwise) || (!isHole && !isClockwise)) {
+                fixedContour = contour.reversedContour
+            } else {
+                fixedContour = contour
+            }
+            
+            
+            for edge in fixedContour.edges {
+                if firstPoint {
+                    path.move(to: edge.endPoint1)
+                    firstPoint = false
+                }
+                
+                if edge.isStraightLine {
+                    path.addLine(to: edge.endPoint2)
+                } else {
+                    path.addCurve(to: edge.endPoint2, controlPoint1: edge.controlPoint1, controlPoint2: edge.controlPoint2)
+                }
+            }
+            if !path.isEmpty {
+                path.close()  // GPC: close each contour
+            }
+        }
+        
+        return path
+    }
+    
+
 
   // 575
   //- (void) insertCrossingsWithBezierGraph:(FBBezierGraph *)other
@@ -868,6 +887,7 @@ class FBBezierGraph {
       contour.inside = contourInsides(contour)
     }
   }
+    
     
     // Added by Scott Sykora. Needed to clean up bezier paths that have wrong windings
     func fixWindingsForNonZeroFill() {

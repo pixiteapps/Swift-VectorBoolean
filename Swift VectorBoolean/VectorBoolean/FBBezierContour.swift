@@ -544,7 +544,7 @@ class FBBezierContour {
   var reversedContour : FBBezierContour {
     let revContour = FBBezierContour()
 
-    for edge in _edges {
+    for edge in _edges.reversed() {
       revContour.addReverseCurve(edge)
     }
 

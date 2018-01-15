@@ -17,8 +17,12 @@ public extension UIBezierPath {
   func fb_union(_ path: UIBezierPath) -> UIBezierPath {
     let thisGraph = FBBezierGraph(path: self)
     let otherGraph = FBBezierGraph(path: path)
+    
+    thisGraph.fixWindingsForNonZeroFill()
+    otherGraph.fixWindingsForNonZeroFill()
+    
     let resultGraph = thisGraph.unionWithBezierGraph(otherGraph)!
-    let result = resultGraph.bezierPath
+    let result = resultGraph.bezierPath(nonZeroWinding: true)
     result.fb_copyAttributesFrom(self)
     return result
   }
@@ -28,7 +32,11 @@ public extension UIBezierPath {
   func fb_intersect(_ path: UIBezierPath) -> UIBezierPath {
     let thisGraph = FBBezierGraph(path: self)
     let otherGraph = FBBezierGraph(path: path)
-    let result = thisGraph.intersectWithBezierGraph(otherGraph).bezierPath
+    
+    thisGraph.fixWindingsForNonZeroFill()
+    otherGraph.fixWindingsForNonZeroFill()
+    
+    let result = thisGraph.intersectWithBezierGraph(otherGraph).bezierPath(nonZeroWinding: true)
     result.fb_copyAttributesFrom(self)
     return result
   }
@@ -38,7 +46,11 @@ public extension UIBezierPath {
   func fb_difference(_ path: UIBezierPath) -> UIBezierPath {
     let thisGraph = FBBezierGraph(path: self)
     let otherGraph = FBBezierGraph(path: path)
-    let result = thisGraph.differenceWithBezierGraph(otherGraph).bezierPath
+    
+    thisGraph.fixWindingsForNonZeroFill()
+    otherGraph.fixWindingsForNonZeroFill()
+    
+    let result = thisGraph.differenceWithBezierGraph(otherGraph).bezierPath(nonZeroWinding: true)
     result.fb_copyAttributesFrom(self)
     return result
   }
@@ -48,7 +60,11 @@ public extension UIBezierPath {
   func fb_xor(_ path: UIBezierPath) -> UIBezierPath {
     let thisGraph = FBBezierGraph(path: self)
     let otherGraph = FBBezierGraph(path: path)
-    let result = thisGraph.xorWithBezierGraph(otherGraph).bezierPath
+    
+    thisGraph.fixWindingsForNonZeroFill()
+    otherGraph.fixWindingsForNonZeroFill()
+    
+    let result = thisGraph.xorWithBezierGraph(otherGraph).bezierPath(nonZeroWinding: true)
     result.fb_copyAttributesFrom(self)
     return result
   }
