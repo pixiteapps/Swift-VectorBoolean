@@ -69,15 +69,16 @@ class TestShapeData {
     TestShape_Complex_Shapes(),                   // 8
     TestShape_Complex_Shapes2(),                  // 9
     TestShape_Triangle_Inside_Rectangle(),        // 10
-    TestShape_Diamond_Overlapping_Rectangle(),    // 11
-    TestShape_Diamond_Inside_Rectangle(),         // 12
-    TestShape_Non_Overlapping_Contours(),         // 13
-    TestShape_More_Non_Overlapping_Contours(),    // 14
-    TestShape_Concentric_Contours(),              // 15
-    TestShape_More_Concentric_Contours(),         // 16
-    TestShape_Circle_Overlapping_Hole(),          // 17
-    TestShape_Rect_w_Hole_Over_Rect_w_Hole(),     // 18
-    TestShape_Curve_Overlapping_Rectangle(),      // 19
+    TestShape_Rectangle_Overlap_Rectangle(),      // 11
+    TestShape_Diamond_Overlapping_Rectangle(),    // 12
+    TestShape_Diamond_Inside_Rectangle(),         // 13
+    TestShape_Non_Overlapping_Contours(),         // 14
+    TestShape_More_Non_Overlapping_Contours(),    // 15
+    TestShape_Concentric_Contours(),              // 16
+    TestShape_More_Concentric_Contours(),         // 17
+    TestShape_Circle_Overlapping_Hole(),          // 18
+    TestShape_Rect_w_Hole_Over_Rect_w_Hole(),     // 19
+    TestShape_Curve_Overlapping_Rectangle(),      // 20
     TestShape_Debug(),
     TestShape_DebugQuadCurve(),
     TestShape_Debug001(),
@@ -293,6 +294,21 @@ class TestShape_Triangle_Inside_Rectangle : TestShape, SampleShapeMaker {
     path.close()
     return path
   }
+}
+
+class TestShape_Rectangle_Overlap_Rectangle : TestShape, SampleShapeMaker {
+    
+    init() {
+        super.init(label: "Rectangle Overlap Rectangle")
+    }
+    
+    func otherShapes() -> UIBezierPath {
+        return UIBezierPath(rect: CGRect(x: 100, y: 100, width: 300, height: 300))
+    }
+    
+    func topShape() -> UIBezierPath {
+        return UIBezierPath(rect: CGRect(x: 250, y: 100, width: 300, height: 300))
+    }
 }
 
 class TestShape_Diamond_Overlapping_Rectangle : TestShape, SampleShapeMaker {

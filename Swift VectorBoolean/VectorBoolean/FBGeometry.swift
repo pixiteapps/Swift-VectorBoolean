@@ -421,7 +421,7 @@ func FBIsValueLessThanEqual(_ value: Double, maximum: Double) -> Bool {
   return FBIsValueLessThanEqualWithOptions(value, maximum: maximum, threshold: FBTangentClosenessThreshold)
 }
 
-
+// Scott changed this to contain an angle if the range is equal
 func FBAngleRangeContainsAngle(_ range: FBAngleRange, angle: Double) -> Bool {
 
   if range.minimum <= range.maximum {

@@ -342,11 +342,6 @@ extension FBBezierCurve {
       return true
     }
     
-    // if these are both straight lines, then they always cross // ADDED BY Scott to fix side by side squares. not sure if this is right
-    if(isStraightLine && edge2.isStraightLine) {
-        return true;
-    }
-
     // The intersection happens at the end of one of the edges, meaning we'll
     // have to look at the next edge in sequence to see if it crosses or not.
     // We'll do that by computing the four tangents at the exact point the
@@ -364,22 +359,34 @@ extension FBBezierCurve {
     var edge2Tangents = FBTangentPair(left: CGPoint.zero, right: CGPoint.zero)
     var offset = 0.0
 
-    let (edge1LeftCurve, edge1RightCurve) = FBFindEdge1TangentCurves(self, intersection: intersection)
+    var (edge1LeftCurve, edge1RightCurve) = FBFindEdge1TangentCurves(self, intersection: intersection)
     let edge1Length = min(edge1LeftCurve.length(), edge1RightCurve.length())
 
-    let (edge2LeftCurve, edge2RightCurve) = FBFindEdge2TangentCurves(edge2, intersection: intersection)
+    var (edge2LeftCurve, edge2RightCurve) = FBFindEdge2TangentCurves(edge2, intersection: intersection)
     let edge2Length = min(edge2LeftCurve.length(), edge2RightCurve.length())
 
     let maxOffset = min(edge1Length, edge2Length)
+    let offsetIncrement = maxOffset / 10
+    
+    // if these are both straight lines and are ambigious then we need to go to the next edge in the sequence and see if those cross, instead of using the offset
+    if isStraightLine && edge2.isStraightLine {
 
-    repeat {
-      FBComputeEdgeTangents(edge1LeftCurve, rightCurve: edge1RightCurve, offset: offset, edgeTangents: &edge1Tangents)
-      FBComputeEdgeTangents(edge2LeftCurve, rightCurve: edge2RightCurve, offset: offset, edgeTangents: &edge2Tangents)
+        FBComputeEdgeTangents(edge1LeftCurve, rightCurve: edge1RightCurve, offset: 0, edgeTangents: &edge1Tangents)
+        FBComputeEdgeTangents(edge2LeftCurve, rightCurve: edge2RightCurve, offset: 0, edgeTangents: &edge2Tangents)
 
-      offset += 1.0
-    } while FBAreTangentsAmbigious(edge1Tangents, edge2Tangents: edge2Tangents) && offset < maxOffset
+    }
 
-    return FBTangentsCross(edge1Tangents, edge2Tangents: edge2Tangents)
+    else {
+        repeat {
+            FBComputeEdgeTangents(edge1LeftCurve, rightCurve: edge1RightCurve, offset: offset, edgeTangents: &edge1Tangents)
+            FBComputeEdgeTangents(edge2LeftCurve, rightCurve: edge2RightCurve, offset: offset, edgeTangents: &edge2Tangents)
+            
+            offset += offsetIncrement
+        } while FBAreTangentsAmbigious(edge1Tangents, edge2Tangents: edge2Tangents) && offset < maxOffset
+    }
+
+    let crosses = FBTangentsCross(edge1Tangents, edge2Tangents: edge2Tangents)
+    return crosses
   }
 
   // 332

@@ -556,19 +556,13 @@ class FBBezierContour {
   //- (FBContourDirection) direction
   var direction : FBContourDirection {
 
-    var lastPoint = CGPoint.zero, currentPoint = CGPoint.zero
-    var firstPoint = true
+    // re-written by scott sykora to use algo from here:
+    // http://stackoverflow.com/questions/1165647/how-to-determine-if-a-list-of-polygon-points-are-in-clockwise-order
+    
   	var a = CGFloat(0.0)
 
     for edge in _edges {
-      if firstPoint {
-        lastPoint = edge.endPoint1
-        firstPoint = false
-      } else {
-        currentPoint = edge.endPoint2
-        a += ((lastPoint.x * currentPoint.y) - (currentPoint.x * lastPoint.y))
-        lastPoint = currentPoint
-      }
+        a += (edge.endPoint2.x - edge.endPoint1.x) * (edge.endPoint2.y + edge.endPoint1.y);
     }
 
     return ( a >= 0 ) ? FBContourDirection.clockwise : FBContourDirection.antiClockwise

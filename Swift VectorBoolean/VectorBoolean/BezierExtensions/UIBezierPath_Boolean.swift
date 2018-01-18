@@ -33,6 +33,9 @@ public extension UIBezierPath {
     let thisGraph = FBBezierGraph(path: self)
     let otherGraph = FBBezierGraph(path: path)
     
+    thisGraph.removeOverlaps()
+    otherGraph.removeOverlaps()
+    
     thisGraph.fixWindingsForNonZeroFill()
     otherGraph.fixWindingsForNonZeroFill()
     
@@ -46,6 +49,9 @@ public extension UIBezierPath {
   func fb_difference(_ path: UIBezierPath) -> UIBezierPath {
     let thisGraph = FBBezierGraph(path: self)
     let otherGraph = FBBezierGraph(path: path)
+    
+    thisGraph.removeOverlaps()
+    otherGraph.removeOverlaps()
     
     thisGraph.fixWindingsForNonZeroFill()
     otherGraph.fixWindingsForNonZeroFill()

@@ -2408,7 +2408,7 @@ public class FBBezierCurve : CustomDebugStringConvertible, CustomStringConvertib
       let time = offset / len
       let pap = _data.pointAtParameter(time)
       if let curve = pap.rightCurve {
-        return FBSubtractPoint(curve.controlPoint2, point2: curve.endPoint2)
+        return FBSubtractPoint(curve.controlPoint1, point2: curve.endPoint1)
       }
     }
 

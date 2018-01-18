@@ -341,7 +341,7 @@
 				TargetAttributes = {
 					6356E1771B4CD83A00420351 = {
 						CreatedOnToolsVersion = 6.4;
-						DevelopmentTeam = ZBQGXUCEGE;
+						DevelopmentTeam = EQRQCAG846;
 						LastSwiftMigration = 0800;
 						ProvisioningStyle = Automatic;
 					};
@@ -613,7 +613,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = ZBQGXUCEGE;
+				DEVELOPMENT_TEAM = EQRQCAG846;
 				INFOPLIST_FILE = "Swift VectorBoolean/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.starside.$(PRODUCT_NAME:rfc1034identifier)";
@@ -629,7 +629,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = ZBQGXUCEGE;
+				DEVELOPMENT_TEAM = EQRQCAG846;
 				INFOPLIST_FILE = "Swift VectorBoolean/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.starside.$(PRODUCT_NAME:rfc1034identifier)";

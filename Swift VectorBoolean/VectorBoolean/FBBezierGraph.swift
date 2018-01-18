@@ -599,7 +599,7 @@ class FBBezierGraph {
   var bezierPath : UIBezierPath {
     return bezierPath(nonZeroWinding: false)
   }
-
+    
     func bezierPath(nonZeroWinding:Bool) -> UIBezierPath {
         // Convert this graph into a bezier path. This is straightforward, each contour
         //  starting with a move to and each subsequent edge being translated by doing
@@ -607,7 +607,7 @@ class FBBezierGraph {
         // Be sure to mark the winding rule as even-odd, or interior contours (holes)
         //  won't get filled/left alone properly.
         let path = UIBezierPath()
-        path.usesEvenOddFillRule = false
+        path.usesEvenOddFillRule = !nonZeroWinding
         
         for contour in _contours {
             var firstPoint = true
@@ -622,7 +622,6 @@ class FBBezierGraph {
             } else {
                 fixedContour = contour
             }
-            
             
             for edge in fixedContour.edges {
                 if firstPoint {
@@ -892,13 +891,11 @@ class FBBezierGraph {
     // Added by Scott Sykora. Needed to clean up bezier paths that have wrong windings
     func fixWindingsForNonZeroFill() {
         // reverse any contours that are needed to keep non-zero winding rule working
-        
-        removeCrossings()
-        insertSelfCrossings() // this will set contour insides correctly
-        
+                
         var fixedContours = [FBBezierContour]()
         
         for contour in _contours {
+            contour.inside = contourInsides(contour)
             let isInside = contour.inside == .hole
             let isClockwise = contour.direction == .clockwise
             
@@ -908,10 +905,8 @@ class FBBezierGraph {
                 fixedContours.append(contour)
             }
         }
-        
+
         _contours = fixedContours
-        
-        removeCrossings()
     }
 
   // 750
@@ -1715,7 +1710,7 @@ class FBBezierGraph {
 
   // 1307
   //- (void) removeOverlaps
-  fileprivate func removeOverlaps() {
+  func removeOverlaps() {
     for contour in _contours {
       contour.removeAllOverlaps()
     }
