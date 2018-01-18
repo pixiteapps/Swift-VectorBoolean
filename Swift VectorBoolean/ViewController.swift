@@ -38,7 +38,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIAdaptivePresenta
     }
   }
   fileprivate var shapeData = TestShapeData()
-  var currentShapesetIndex : Int = 0
+  var currentShapesetIndex : Int = 11
 
 
   override func viewDidLoad() {

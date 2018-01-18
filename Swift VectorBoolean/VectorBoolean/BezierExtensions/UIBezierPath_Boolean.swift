@@ -18,11 +18,8 @@ public extension UIBezierPath {
     let thisGraph = FBBezierGraph(path: self)
     let otherGraph = FBBezierGraph(path: path)
     
-    thisGraph.fixWindingsForNonZeroFill()
-    otherGraph.fixWindingsForNonZeroFill()
-    
     let resultGraph = thisGraph.unionWithBezierGraph(otherGraph)!
-    let result = resultGraph.bezierPath(nonZeroWinding: true)
+    let result = resultGraph.bezierPath(usesEvenOddFillRule:usesEvenOddFillRule)
     result.fb_copyAttributesFrom(self)
     return result
   }
@@ -33,13 +30,7 @@ public extension UIBezierPath {
     let thisGraph = FBBezierGraph(path: self)
     let otherGraph = FBBezierGraph(path: path)
     
-    thisGraph.removeOverlaps()
-    otherGraph.removeOverlaps()
-    
-    thisGraph.fixWindingsForNonZeroFill()
-    otherGraph.fixWindingsForNonZeroFill()
-    
-    let result = thisGraph.intersectWithBezierGraph(otherGraph).bezierPath(nonZeroWinding: true)
+    let result = thisGraph.intersectWithBezierGraph(otherGraph).bezierPath(usesEvenOddFillRule:usesEvenOddFillRule)
     result.fb_copyAttributesFrom(self)
     return result
   }
@@ -50,13 +41,7 @@ public extension UIBezierPath {
     let thisGraph = FBBezierGraph(path: self)
     let otherGraph = FBBezierGraph(path: path)
     
-    thisGraph.removeOverlaps()
-    otherGraph.removeOverlaps()
-    
-    thisGraph.fixWindingsForNonZeroFill()
-    otherGraph.fixWindingsForNonZeroFill()
-    
-    let result = thisGraph.differenceWithBezierGraph(otherGraph).bezierPath(nonZeroWinding: true)
+    let result = thisGraph.differenceWithBezierGraph(otherGraph).bezierPath(usesEvenOddFillRule:usesEvenOddFillRule)
     result.fb_copyAttributesFrom(self)
     return result
   }
@@ -67,10 +52,7 @@ public extension UIBezierPath {
     let thisGraph = FBBezierGraph(path: self)
     let otherGraph = FBBezierGraph(path: path)
     
-    thisGraph.fixWindingsForNonZeroFill()
-    otherGraph.fixWindingsForNonZeroFill()
-    
-    let result = thisGraph.xorWithBezierGraph(otherGraph).bezierPath(nonZeroWinding: true)
+    let result = thisGraph.xorWithBezierGraph(otherGraph).bezierPath(usesEvenOddFillRule:usesEvenOddFillRule)
     result.fb_copyAttributesFrom(self)
     return result
   }

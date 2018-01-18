@@ -597,17 +597,17 @@ class FBBezierGraph {
   // 544
   //- (NSBezierPath *) bezierPath
   var bezierPath : UIBezierPath {
-    return bezierPath(nonZeroWinding: false)
+    return bezierPath(usesEvenOddFillRule: true) // default this to true, it's the default mode for this library
   }
     
-    func bezierPath(nonZeroWinding:Bool) -> UIBezierPath {
+    func bezierPath(usesEvenOddFillRule:Bool) -> UIBezierPath {
         // Convert this graph into a bezier path. This is straightforward, each contour
         //  starting with a move to and each subsequent edge being translated by doing
         //  a curve to.
         // Be sure to mark the winding rule as even-odd, or interior contours (holes)
         //  won't get filled/left alone properly.
         let path = UIBezierPath()
-        path.usesEvenOddFillRule = !nonZeroWinding
+        path.usesEvenOddFillRule = usesEvenOddFillRule
         
         for contour in _contours {
             var firstPoint = true
@@ -616,8 +616,9 @@ class FBBezierGraph {
             let isHole = contour.inside == .hole
             let isClockwise = contour.direction == .clockwise
             
+            // if we're using non-zero fill rule winding, then check weather this is a hole or not and make sure it has the right winding
             let fixedContour:FBBezierContour
-            if nonZeroWinding && ((isHole && isClockwise) || (!isHole && !isClockwise)) {
+            if !usesEvenOddFillRule && ((isHole && isClockwise) || (!isHole && !isClockwise)) {
                 fixedContour = contour.reversedContour
             } else {
                 fixedContour = contour
@@ -888,26 +889,6 @@ class FBBezierGraph {
   }
     
     
-    // Added by Scott Sykora. Needed to clean up bezier paths that have wrong windings
-    func fixWindingsForNonZeroFill() {
-        // reverse any contours that are needed to keep non-zero winding rule working
-                
-        var fixedContours = [FBBezierContour]()
-        
-        for contour in _contours {
-            contour.inside = contourInsides(contour)
-            let isInside = contour.inside == .hole
-            let isClockwise = contour.direction == .clockwise
-            
-            if ((isInside && isClockwise) || (!isInside && !isClockwise)) {
-                fixedContours.append(contour.reversedContour)
-            } else {
-                fixedContours.append(contour)
-            }
-        }
-
-        _contours = fixedContours
-    }
 
   // 750
   //- (NSRect) bounds
@@ -1710,7 +1691,7 @@ class FBBezierGraph {
 
   // 1307
   //- (void) removeOverlaps
-  func removeOverlaps() {
+  fileprivate func removeOverlaps() {
     for contour in _contours {
       contour.removeAllOverlaps()
     }
