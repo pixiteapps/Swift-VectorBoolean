@@ -12,7 +12,7 @@
 import UIKit
 
 let FBPointCloseThreshold = isRunningOn64BitDevice ? 1e-7 : 1e-3
-let FBParameterCloseThreshold = isRunningOn64BitDevice ? 1e-8 : 1e-2
+let FBParameterCloseThreshold = isRunningOn64BitDevice ? 1e-6 : 1e-2
 
 /// FBBezierIntersection stores where two bezier curves intersect.
 ///
@@ -84,10 +84,11 @@ public class FBBezierIntersection {
     let curve2RightTangent = FBNormalizePoint(FBSubtractPoint(_curve2RightBezier!.controlPoint1, point2: _curve2RightBezier!.endPoint1))
 
     // See if the tangents are the same. If so, then we're tangent at the intersection point
-    return FBArePointsCloseWithOptions(curve1LeftTangent, point2: curve2LeftTangent, threshold: FBPointCloseThreshold)
-      || FBArePointsCloseWithOptions(curve1LeftTangent, point2: curve2RightTangent, threshold: FBPointCloseThreshold)
-      || FBArePointsCloseWithOptions(curve1RightTangent, point2: curve2LeftTangent, threshold: FBPointCloseThreshold)
-      || FBArePointsCloseWithOptions(curve1RightTangent, point2: curve2RightTangent, threshold: FBPointCloseThreshold)
+    // use parameter close threshold here, its 10x the point threshold so we shouldnt' tangents that don't also hit the end of the curve
+    return FBArePointsCloseWithOptions(curve1LeftTangent, point2: curve2LeftTangent, threshold: FBParameterCloseThreshold)
+      || FBArePointsCloseWithOptions(curve1LeftTangent, point2: curve2RightTangent, threshold: FBParameterCloseThreshold)
+      || FBArePointsCloseWithOptions(curve1RightTangent, point2: curve2LeftTangent, threshold: FBParameterCloseThreshold)
+      || FBArePointsCloseWithOptions(curve1RightTangent, point2: curve2RightTangent, threshold: FBParameterCloseThreshold)
   }
 
   //- (FBBezierCurve *) curve1LeftBezier
@@ -117,12 +118,13 @@ public class FBBezierIntersection {
 
   //- (BOOL) isAtStartOfCurve1
   var isAtStartOfCurve1 : Bool {
-    return FBAreValuesCloseWithOptions(_parameter1, value2: 0.0, threshold: FBParameterCloseThreshold) || _curve1.isPoint
+    // this is a little slower, but we need to in line lenght here because we were getting the start of curve and tangent calcs mismatch when dealign with small point errors
+    return FBAreValuesCloseWithOptions(_parameter1, value2: 0.0, threshold: FBPointCloseThreshold / _curve1.length()) || _curve1.isPoint
   }
 
   //- (BOOL) isAtStopOfCurve1
   var isAtStopOfCurve1 : Bool {
-    return FBAreValuesCloseWithOptions(_parameter1, value2: 1.0, threshold: FBParameterCloseThreshold) || _curve1.isPoint
+    return FBAreValuesCloseWithOptions(_parameter1, value2: 1.0, threshold: FBPointCloseThreshold / _curve1.length()) || _curve1.isPoint
   }
 
   //- (BOOL) isAtEndPointOfCurve1
@@ -133,12 +135,12 @@ public class FBBezierIntersection {
 
   //- (BOOL) isAtStartOfCurve2
   var isAtStartOfCurve2 : Bool {
-    return FBAreValuesCloseWithOptions(_parameter2, value2: 0.0, threshold: FBParameterCloseThreshold) || _curve2.isPoint
+    return FBAreValuesCloseWithOptions(_parameter2, value2: 0.0, threshold: FBPointCloseThreshold / _curve2.length()) || _curve2.isPoint
   }
 
   //- (BOOL) isAtStopOfCurve2
   var isAtStopOfCurve2 : Bool {
-    return FBAreValuesCloseWithOptions(_parameter2, value2: 1.0, threshold: FBParameterCloseThreshold) || _curve2.isPoint
+    return FBAreValuesCloseWithOptions(_parameter2, value2: 1.0, threshold: FBPointCloseThreshold / _curve2.length()) || _curve2.isPoint
   }
 
   //- (BOOL) isAtEndPointOfCurve2

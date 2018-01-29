@@ -71,6 +71,7 @@ class TestShapeData {
     TestShape_Triangle_Inside_Rectangle(),        // 10
     TestShape_Rectangle_Overlap_Rectangle(),      // 11
     TestShape_Rectangle_Overlap_Side_Rounded(),
+    TestShape_Rectangle_Overlap_Side_Pill(),
     TestShape_Diamond_Overlapping_Rectangle(),    // 12
     TestShape_Diamond_Inside_Rectangle(),         // 13
     TestShape_Non_Overlapping_Contours(),         // 14
@@ -339,6 +340,41 @@ class TestShape_Rectangle_Overlap_Side_Rounded : TestShape, SampleShapeMaker {
         bezierPath.addLine(to: CGPoint(x: 44.3034, y: -4.6185278e-14))
         bezierPath.addCurve(to: CGPoint(x: 22.1517, y: 22.1517), controlPoint1: CGPoint(x: 44.3034, y: 12.241727), controlPoint2: CGPoint(x: 34.393429, y: 22.1517))
         bezierPath.addLine(to: CGPoint(x: 2.1316282e-14, y: 22.1517))
+        bezierPath.close()
+        
+        return bezierPath
+    }
+}
+
+class TestShape_Rectangle_Overlap_Side_Pill : TestShape, SampleShapeMaker {
+    
+    init() {
+        super.init(label: "Rectangle Overlap Side Pill")
+    }
+    
+    func otherShapes() -> UIBezierPath {
+        let bezierPath = UIBezierPath()
+        bezierPath.move(to: CGPoint(x: 31.498467, y: 32.145078))
+        bezierPath.addLine(to: CGPoint(x: 31.498467, y: 16.787565))
+        bezierPath.addLine(to: CGPoint(x: -60.474535, y: 16.787565))
+        bezierPath.addLine(to: CGPoint(x: -60.474535, y: 32.145078))
+        bezierPath.addLine(to: CGPoint(x: 31.498467, y: 32.145078))
+        bezierPath.close()
+        return bezierPath
+    }
+    
+    func topShape() -> UIBezierPath {
+        
+        let bezierPath = UIBezierPath()
+        bezierPath.move(to: CGPoint(x: 17.663327, y:24.455505))
+        bezierPath.addLine(to: CGPoint(x: 17.663327, y: 24.455505))
+        bezierPath.addCurve(to: CGPoint(x: 25.331267, y: 32.123445 ), controlPoint1: CGPoint(x: 17.663327, y:28.676745), controlPoint2: CGPoint(x: 21.110028, y: 32.123445))
+        bezierPath.addLine(to: CGPoint(x: 48.296361, y: 32.123445))
+        bezierPath.addCurve(to: CGPoint(x: 55.964303, y: 24.455505), controlPoint1: CGPoint(x: 52.517602, y: 32.123445), controlPoint2: CGPoint(x: 55.964303, y: 28.676745))
+        bezierPath.addLine(to: CGPoint(x: 55.964303, y: 24.455505))
+        bezierPath.addCurve(to: CGPoint(x: 48.296361, y:16.787565 ), controlPoint1: CGPoint(x: 55.964303, y:20.234265), controlPoint2: CGPoint(x: 52.517602, y:16.787565))
+        bezierPath.addLine(to: CGPoint(x: 25.331267, y:16.787565))
+        bezierPath.addCurve(to: CGPoint(x: 17.663327, y:24.455505), controlPoint1: CGPoint(x: 21.110028, y:16.787565), controlPoint2: CGPoint(x: 17.663327, y:20.234265))
         bezierPath.close()
         
         return bezierPath

@@ -359,31 +359,25 @@ extension FBBezierCurve {
     var edge2Tangents = FBTangentPair(left: CGPoint.zero, right: CGPoint.zero)
     var offset = 0.0
 
-    var (edge1LeftCurve, edge1RightCurve) = FBFindEdge1TangentCurves(self, intersection: intersection)
+    let (edge1LeftCurve, edge1RightCurve) = FBFindEdge1TangentCurves(self, intersection: intersection)
     let edge1Length = min(edge1LeftCurve.length(), edge1RightCurve.length())
 
-    var (edge2LeftCurve, edge2RightCurve) = FBFindEdge2TangentCurves(edge2, intersection: intersection)
+    let (edge2LeftCurve, edge2RightCurve) = FBFindEdge2TangentCurves(edge2, intersection: intersection)
     let edge2Length = min(edge2LeftCurve.length(), edge2RightCurve.length())
 
     let maxOffset = min(edge1Length, edge2Length)
     let offsetIncrement = maxOffset / 10
     
-    // if these are both straight lines and are ambigious then we need to go to the next edge in the sequence and see if those cross, instead of using the offset
-    if isStraightLine && edge2.isStraightLine {
+    // if these are both straight lines and are ambigious then no need to offset and try again
+    let allStraight =  edge1LeftCurve.isStraightLine && edge2LeftCurve.isStraightLine && edge1RightCurve.isStraightLine && edge2RightCurve.isStraightLine
 
-        FBComputeEdgeTangents(edge1LeftCurve, rightCurve: edge1RightCurve, offset: 0, edgeTangents: &edge1Tangents)
-        FBComputeEdgeTangents(edge2LeftCurve, rightCurve: edge2RightCurve, offset: 0, edgeTangents: &edge2Tangents)
-
-    }
-
-    else {
-        repeat {
-            FBComputeEdgeTangents(edge1LeftCurve, rightCurve: edge1RightCurve, offset: offset, edgeTangents: &edge1Tangents)
-            FBComputeEdgeTangents(edge2LeftCurve, rightCurve: edge2RightCurve, offset: offset, edgeTangents: &edge2Tangents)
-            
-            offset += offsetIncrement
-        } while FBAreTangentsAmbigious(edge1Tangents, edge2Tangents: edge2Tangents) && offset < maxOffset
-    }
+    repeat {
+        FBComputeEdgeTangents(edge1LeftCurve, rightCurve: edge1RightCurve, offset: offset, edgeTangents: &edge1Tangents)
+        FBComputeEdgeTangents(edge2LeftCurve, rightCurve: edge2RightCurve, offset: offset, edgeTangents: &edge2Tangents)
+        
+        offset += offsetIncrement
+    } while FBAreTangentsAmbigious(edge1Tangents, edge2Tangents: edge2Tangents) && offset < maxOffset && !allStraight
+    
 
     let crosses = FBTangentsCross(edge1Tangents, edge2Tangents: edge2Tangents)
     return crosses
