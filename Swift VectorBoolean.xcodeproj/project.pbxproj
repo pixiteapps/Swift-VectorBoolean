@@ -347,7 +347,7 @@
 					};
 					6356E18C1B4CD83A00420351 = {
 						CreatedOnToolsVersion = 6.4;
-						DevelopmentTeam = ZBQGXUCEGE;
+						DevelopmentTeam = EQRQCAG846;
 						LastSwiftMigration = 0800;
 						TestTargetID = 6356E1771B4CD83A00420351;
 					};
@@ -641,7 +641,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = ZBQGXUCEGE;
+				DEVELOPMENT_TEAM = EQRQCAG846;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -659,7 +659,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = ZBQGXUCEGE;
+				DEVELOPMENT_TEAM = EQRQCAG846;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "Swift VectorBooleanTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
