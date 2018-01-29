@@ -38,11 +38,20 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIAdaptivePresenta
     }
   }
   fileprivate var shapeData = TestShapeData()
-  var currentShapesetIndex : Int = 11
-
+    
+    var currentShapesetIndex : Int = 0 {
+        didSet {
+            UserDefaults.standard.set(currentShapesetIndex, forKey: "lastShapeSelected")
+        }
+    }
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    let lastShapeSelected = UserDefaults.standard.integer(forKey: "lastShapeSelected")
+    if (lastShapeSelected >= 0 && lastShapeSelected < shapeData.shapes.count) {
+        currentShapesetIndex = lastShapeSelected
+    }
 
     // CREDIT: This concept comes from Matt Neuburg's
     // Stack Overflow answer: http://stackoverflow.com/a/24344459
