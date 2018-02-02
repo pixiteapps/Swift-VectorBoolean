@@ -13,4 +13,6 @@ Pod::Spec.new do |s|
   s.source_files     = "Swift VectorBoolean/VectorBoolean/**/*.{swift}"
   s.requires_arc     = true
   s.ios.deployment_target = '9.0'
+  s.pod_target_xcconfig = { 'SWIFT_VERSION' => '3.2' }
+
 end
