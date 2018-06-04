@@ -609,6 +609,11 @@ class FBBezierGraph {
         let path = UIBezierPath()
         path.usesEvenOddFillRule = usesEvenOddFillRule
         
+        if(!usesEvenOddFillRule) {
+            // do this so contourInsides function works when we need to check if things are holes
+            self.insertSelfCrossings()
+        }
+        
         for contour in _contours {
             var firstPoint = true
             
@@ -933,8 +938,10 @@ class FBBezierGraph {
     let testPoint = testContour.testPointForContainment
 
     // Move us just outside the bounds of the graph
+    // make this a diagonal line, this seems to work a little better than the straight one
     let beyondX = testPoint.x > self.bounds.minX ? self.bounds.minX - 10 : self.bounds.maxX + 10
-    let lineEndPoint = CGPoint(x: beyondX, y: testPoint.y)
+    let beyondY = testPoint.y > self.bounds.minY ? self.bounds.minY - 10 : self.bounds.maxY + 10
+    let lineEndPoint = CGPoint(x: beyondX, y: beyondY)
     let testCurve = FBBezierCurve(startPoint: testPoint, endPoint: lineEndPoint)
 
     var intersectCount = 0

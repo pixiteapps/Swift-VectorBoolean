@@ -19,6 +19,7 @@ public extension UIBezierPath {
     let otherGraph = FBBezierGraph(path: path)
     
     let resultGraph = thisGraph.unionWithBezierGraph(otherGraph)!
+    
     let result = resultGraph.bezierPath(usesEvenOddFillRule:usesEvenOddFillRule)
     result.fb_copyAttributesFrom(self)
     return result
