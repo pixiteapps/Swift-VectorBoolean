@@ -542,7 +542,7 @@ class FBBezierGraph {
                     if let outsideContour = contourSets[contourSetIndex].first {
                         if(checkInside(contour: aContour, isInsideContour: outsideContour) == .hole) {
                             contourSets[contourSetIndex].append(aContour)
-                            continue
+                            break
                         }
                     }
                 }

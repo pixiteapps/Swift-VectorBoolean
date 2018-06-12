@@ -69,5 +69,11 @@ public extension UIBezierPath {
         let thisGraph = FBBezierGraph(path: self)
         return thisGraph.numberOfFilledContours()
     }
+    
+    // returns the number of contours (holes and fills count as seperate)
+    func fb_numContours() -> Int {
+        let thisGraph = FBBezierGraph(path: self)
+        return thisGraph.contours.count
+    }
 
 }
