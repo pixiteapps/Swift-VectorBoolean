@@ -57,5 +57,17 @@ public extension UIBezierPath {
     result.fb_copyAttributesFrom(self)
     return result
   }
+    
+    // returns a split version of this graph (holes stay attatched to the contour they cut and count as 1)
+    func fb_splitPath() -> [UIBezierPath] {
+        let thisGraph = FBBezierGraph(path: self)
+        return thisGraph.splitBezierPath()
+    }
+    
+    // returns the number of paths this path can be split into (holes stay attatched to the contour they cut and count as 1)
+    func fb_numPaths() -> Int {
+        let thisGraph = FBBezierGraph(path: self)
+        return thisGraph.numberOfFilledContours()
+    }
 
 }

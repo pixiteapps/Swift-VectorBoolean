@@ -479,6 +479,85 @@ class FBBezierGraph {
     
     return result
   }
+    
+    func numberOfFilledContours() -> Int {
+        // if this is just one contour then it's always 1
+        if contours.count == 1 {
+            return 1
+        }
+        
+        insertSelfCrossings()
+        var numFilled = 0
+        
+        for aContour in contours {
+            aContour.inside = contourInsides(aContour)
+            if(aContour.inside == .filled) {
+                numFilled += 1
+            }
+        }
+        
+        return numFilled
+    }
+    
+    // returns an array of paths split into their filled contours and corresponding holes
+    func splitBezierPath() -> [UIBezierPath] {
+        // if this is just one contour then it's always 1
+        if contours.count == 1 {
+            return [bezierPath(usesEvenOddFillRule: true)]
+        }
+        
+        insertSelfCrossings()
+        
+        // create an array of all the outside contours (these will all be seperate)
+        var outsideContours = [FBBezierContour]()
+        for aContour in contours {
+            aContour.inside = contourInsides(aContour)
+            
+            if(aContour.inside == .filled) {
+                outsideContours.append(aContour)
+            }
+        }
+        
+        // sort these contours so ones inside others are first
+        outsideContours.sort { (contour1, contour2) -> Bool in
+            if (checkInside(contour: contour1, isInsideContour: contour2) == .hole) {
+                return true
+            }
+            
+            return false
+        }
+        
+        // create an array of arrays so we can combine these
+        var contourSets = [[FBBezierContour]]()
+        outsideContours.forEach { (outsideContour) in
+            contourSets.append([outsideContour])
+        }
+        
+        // loop through the inside contours and figure out what contour they belong to. the first one we find should be good because of the sort
+        for aContour in contours {
+            if(aContour.inside == .hole) {
+                
+                // find the first contour this is inside
+                for contourSetIndex in 0..<contourSets.count {
+                    if let outsideContour = contourSets[contourSetIndex].first {
+                        if(checkInside(contour: aContour, isInsideContour: outsideContour) == .hole) {
+                            contourSets[contourSetIndex].append(aContour)
+                            continue
+                        }
+                    }
+                }
+            }
+        }
+        
+        // now return an array fo bezier curves
+        var beziers = [UIBezierPath]()
+        
+        for aContourSet in contourSets {
+            beziers.append(bezierPath(usesEvenOddFillRule: true, contours: aContourSet))
+        }
+        
+        return beziers
+    }
 
   // 450
   //- (void) differenceEquivalentNonintersectingContours:(NSMutableArray *)ourNonintersectingContours withContours:(NSMutableArray *)theirNonintersectingContours results:(NSMutableArray *)results
@@ -597,10 +676,14 @@ class FBBezierGraph {
   // 544
   //- (NSBezierPath *) bezierPath
   var bezierPath : UIBezierPath {
-    return bezierPath(usesEvenOddFillRule: true) // default this to true, it's the default mode for this library
+    return bezierPath(usesEvenOddFillRule: true, contours:_contours) // default this to true, it's the default mode for this library
   }
     
     func bezierPath(usesEvenOddFillRule:Bool) -> UIBezierPath {
+        return bezierPath(usesEvenOddFillRule: usesEvenOddFillRule, contours:_contours)
+    }
+        
+    func bezierPath(usesEvenOddFillRule:Bool, contours:[FBBezierContour]) -> UIBezierPath {
         // Convert this graph into a bezier path. This is straightforward, each contour
         //  starting with a move to and each subsequent edge being translated by doing
         //  a curve to.
@@ -614,7 +697,7 @@ class FBBezierGraph {
             self.insertSelfCrossings()
         }
         
-        for contour in _contours {
+        for contour in contours {
             var firstPoint = true
             
             contour.inside = contourInsides(contour)
@@ -932,7 +1015,7 @@ class FBBezierGraph {
     // and the self crossings to be in place to work
 
     if testContour.edges.count == 0 {
-      
+      return .filled
     }
 
     let testPoint = testContour.testPointForContainment
@@ -966,6 +1049,32 @@ class FBBezierGraph {
       return .filled
     }
   }
+    
+    fileprivate func checkInside(contour:FBBezierContour, isInsideContour:FBBezierContour) -> FBContourInside {
+        
+        if contour.edges.count == 0 || isInsideContour.edges.count == 0 {
+            return .filled
+        }
+        
+        let testPoint = contour.testPointForContainment
+        
+        // Move us just outside the bounds of the graph
+        // make this a diagonal line, this seems to work a little better than the straight one
+        let beyondX = testPoint.x > self.bounds.minX ? self.bounds.minX - 10 : self.bounds.maxX + 10
+        let beyondY = testPoint.y > self.bounds.minY ? self.bounds.minY - 10 : self.bounds.maxY + 10
+        let lineEndPoint = CGPoint(x: beyondX, y: beyondY)
+        let testCurve = FBBezierCurve(startPoint: testPoint, endPoint: lineEndPoint)
+        
+        let intersectCount = isInsideContour.numberOfIntersectionsWithRay(testCurve)
+
+        
+        // return (intersectCount & 1) == 1 ? .Hole : .Filled
+        if intersectCount.isOdd {
+            return .hole
+        } else {
+            return .filled
+        }
+    }
 
   // 791
   //- (FBCurveLocation *) closestLocationToPoint:(NSPoint)point
