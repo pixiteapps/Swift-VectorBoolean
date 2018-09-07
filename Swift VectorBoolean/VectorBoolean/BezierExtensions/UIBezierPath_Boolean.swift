@@ -14,7 +14,7 @@ public extension UIBezierPath {
 
   // 15
   //- (NSBezierPath *) fb_union:(NSBezierPath *)path
-  func fb_union(_ path: UIBezierPath) -> UIBezierPath {
+  @objc func fb_union(_ path: UIBezierPath) -> UIBezierPath {
     let thisGraph = FBBezierGraph(path: self)
     let otherGraph = FBBezierGraph(path: path)
     
@@ -27,7 +27,7 @@ public extension UIBezierPath {
 
   // 24
   //- (NSBezierPath *) fb_intersect:(NSBezierPath *)path
-  func fb_intersect(_ path: UIBezierPath) -> UIBezierPath {
+  @objc func fb_intersect(_ path: UIBezierPath) -> UIBezierPath {
     let thisGraph = FBBezierGraph(path: self)
     let otherGraph = FBBezierGraph(path: path)
     
@@ -38,7 +38,7 @@ public extension UIBezierPath {
 
   // 33
   //- (NSBezierPath *) fb_difference:(NSBezierPath *)path
-  func fb_difference(_ path: UIBezierPath) -> UIBezierPath {
+  @objc func fb_difference(_ path: UIBezierPath) -> UIBezierPath {
     let thisGraph = FBBezierGraph(path: self)
     let otherGraph = FBBezierGraph(path: path)
     
@@ -49,7 +49,7 @@ public extension UIBezierPath {
 
   // 42
   //- (NSBezierPath *) fb_xor:(NSBezierPath *)path
-  func fb_xor(_ path: UIBezierPath) -> UIBezierPath {
+  @objc func fb_xor(_ path: UIBezierPath) -> UIBezierPath {
     let thisGraph = FBBezierGraph(path: self)
     let otherGraph = FBBezierGraph(path: path)
     
@@ -59,19 +59,19 @@ public extension UIBezierPath {
   }
     
     // returns a split version of this graph (holes stay attatched to the contour they cut and count as 1)
-    func fb_splitPath() -> [UIBezierPath] {
+    @objc func fb_splitPath() -> [UIBezierPath] {
         let thisGraph = FBBezierGraph(path: self)
         return thisGraph.splitBezierPath()
     }
     
     // returns the number of paths this path can be split into (holes stay attatched to the contour they cut and count as 1)
-    func fb_numPaths() -> Int {
+    @objc func fb_numPaths() -> Int {
         let thisGraph = FBBezierGraph(path: self)
         return thisGraph.numberOfFilledContours()
     }
     
     // returns the number of contours (holes and fills count as seperate)
-    func fb_numContours() -> Int {
+    @objc func fb_numContours() -> Int {
         let thisGraph = FBBezierGraph(path: self)
         return thisGraph.contours.count
     }
