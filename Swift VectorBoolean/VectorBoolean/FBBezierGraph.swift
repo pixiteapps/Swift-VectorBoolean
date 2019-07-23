@@ -1029,6 +1029,12 @@ class FBBezierGraph {
 
     var intersectCount = 0
     for contour in contours {
+        
+      // if the line starts and ends outside the bounds of a contour we can assume it's either 2 or 0 crossings so no need to count
+      // the test line should always end outside the bounds so just test the start point
+      if !contour.bounds.contains(testPoint) {
+        continue
+      }
 
       // LRT - Added test for empty contour added by Obj-C simulation
       if contour.edges.count == 0 {
@@ -1038,6 +1044,8 @@ class FBBezierGraph {
       if contour === testContour || contour.crossesOwnContour(testContour) {
         continue // don't test self intersections
       }
+        
+      
 
       intersectCount += contour.numberOfIntersectionsWithRay(testCurve)
     }
@@ -1065,8 +1073,15 @@ class FBBezierGraph {
         let lineEndPoint = CGPoint(x: beyondX, y: beyondY)
         let testCurve = FBBezierCurve(startPoint: testPoint, endPoint: lineEndPoint)
         
-        let intersectCount = isInsideContour.numberOfIntersectionsWithRay(testCurve)
-
+        let intersectCount:Int
+        
+        // if the line starts and ends outside the bounds of a contour we can assume it's either 2 or 0 crossings so no need to count
+        // the test line should always end outside the bounds so just test the start point
+        if isInsideContour.bounds.contains(testPoint) {
+            intersectCount = isInsideContour.numberOfIntersectionsWithRay(testCurve)
+        } else {
+            intersectCount = 2
+        }
         
         // return (intersectCount & 1) == 1 ? .Hole : .Filled
         if intersectCount.isOdd {
