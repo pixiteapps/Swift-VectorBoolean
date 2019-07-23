@@ -1044,8 +1044,6 @@ class FBBezierGraph {
       if contour === testContour || contour.crossesOwnContour(testContour) {
         continue // don't test self intersections
       }
-        
-      
 
       intersectCount += contour.numberOfIntersectionsWithRay(testCurve)
     }
