@@ -484,6 +484,10 @@ class FBBezierGraph {
         // if this is just one contour then it's always 1
         if contours.count == 1 {
             return 1
+
+        } else if contours.count > 20 {
+            // complex shape - assume it is splittable
+            return 2
         }
         
         insertSelfCrossings()
