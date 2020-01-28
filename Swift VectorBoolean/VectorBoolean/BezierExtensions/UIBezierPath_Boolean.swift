@@ -64,6 +64,11 @@ public extension UIBezierPath {
         return thisGraph.splitBezierPath()
     }
     
+    @objc func fb_nonZeroFillRule() -> UIBezierPath {
+        let thisGraph = FBBezierGraph(path: self)
+        return thisGraph.bezierPath(usesEvenOddFillRule: false)
+    }
+    
     // returns the number of paths this path can be split into (holes stay attatched to the contour they cut and count as 1)
     @objc func fb_numPaths() -> Int {
         let thisGraph = FBBezierGraph(path: self)
