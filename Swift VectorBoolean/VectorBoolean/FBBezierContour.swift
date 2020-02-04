@@ -562,7 +562,15 @@ class FBBezierContour {
     var a = CGFloat(0.0)
 
     for edge in _edges {
-      a += (edge.endPoint2.x - edge.endPoint1.x) * (edge.endPoint2.y + edge.endPoint1.y);
+        
+        let point1 = edge.endPoint1
+        let point2 = edge.controlPoint1
+        let point3 = edge.controlPoint2
+        let point4 = edge.endPoint2
+        
+        a += (point2.x - point1.x) * (point2.y + point1.y);
+        a += (point3.x - point2.x) * (point3.y + point2.y);
+        a += (point4.x - point3.x) * (point4.y + point3.y);        
     }
     return ( a >= 0 ) ? FBContourDirection.clockwise : FBContourDirection.antiClockwise
   }

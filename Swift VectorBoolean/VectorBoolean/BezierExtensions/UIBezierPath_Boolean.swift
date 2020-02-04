@@ -66,6 +66,10 @@ public extension UIBezierPath {
     
     @objc func fb_nonZeroFillRule() -> UIBezierPath {
         let thisGraph = FBBezierGraph(path: self)
+        // if we're changing the fill rule we should assume the paths are filled and close them all
+        thisGraph.contours.forEach { (contour) in
+            contour.close()
+        }
         return thisGraph.bezierPath(usesEvenOddFillRule: false)
     }
     
